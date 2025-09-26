@@ -1,36 +1,27 @@
-export interface NonConformity {
+
+export interface Finding {
+  id: string;
   description: string;
-  riskLevel: 'Basso' | 'Medio' | 'Alto';
-  violatedNorm?: string;
+  hazard: string;
+  riskLevel: number; // 1-10
+  regulation: string;
+  recommendation: string;
+  photo?: {
+    base64: string;
+    analysis: string;
+  };
 }
 
-export interface LocationData {
-  locationName: string;
-  photos: string[]; // Array of base64 encoded image strings
+export interface ReportSection {
+  title: string;
+  findings: Finding[];
 }
 
-export interface Asset {
-  name: string;
-  type: 'Macchinario' | 'Impianto' | 'Attrezzatura' | 'Sostanza';
-  notes?: string;
-}
+export type Report = ReportSection[];
 
-export interface WorkerGroup {
-  name: string;
-  tasks: string;
-}
-
-export interface Activity {
-  name: string;
-  workplace: string;
-  assets: string[];
-  workerGroups: string[];
-  nonConformities: NonConformity[];
-}
-
-export interface ReportData {
-  workplaces: LocationData[];
-  assets: Asset[];
-  workerGroups: WorkerGroup[];
-  activities: Activity[];
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'model' | 'system';
+  text: string;
+  photo?: string; // base64 url
 }
