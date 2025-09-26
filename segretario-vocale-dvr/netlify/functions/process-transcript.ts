@@ -1,24 +1,5 @@
-
 import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
 import type { Handler } from "@netlify/functions";
-
-// Interfacce copiate da types.ts per l'uso server-side
-interface ReportData {
-  workplaces: { locationName: string }[];
-  assets: { name: string; type: 'Macchinario' | 'Impianto' | 'Attrezzatura' | 'Sostanza'; notes?: string }[];
-  workerGroups: { name: string; tasks: string }[];
-  activities: {
-    name: string;
-    workplace: string;
-    assets: string[];
-    workerGroups: string[];
-    nonConformities: {
-      description: string;
-      riskLevel: 'Basso' | 'Medio' | 'Alto';
-      violatedNorm?: string;
-    }[];
-  }[];
-}
 
 const schema = {
   type: Type.OBJECT,
@@ -88,7 +69,7 @@ const schema = {
   },
 };
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -108,10 +89,6 @@ export const handler: Handler = async (event, context) => {
       return { statusCode: 400, body: "Trascrizione mancante nel corpo della richiesta." };
     }
     
-    // FIX: Refactored the prompt to use `systemInstruction` and fixed a syntax error.
-    // The original code had a stray backslash before the template literal for `contents`,
-    // causing a parsing error. Moving the instructions to the dedicated `systemInstruction`
-    // field is the recommended best practice.
     const systemInstruction = `AGISCI COME UN ESPERTO CONSULENTE SULLA SICUREZZA SUL LAVORO ITALIANO, con profonda conoscenza del D.Lgs. 81/2008 e delle principali norme tecniche (UNI, ISO, CEI).
         Analizza la seguente trascrizione di un sopralluogo per la valutazione dei rischi. Il tuo compito è estrarre e strutturare le informazioni in formato JSON secondo lo schema fornito.
   
@@ -127,7 +104,7 @@ export const handler: Handler = async (event, context) => {
 
     const response: GenerateContentResponse = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `TRASCRIZIONE: "${transcript}"`,
+        contents: \`TRASCRIZIONE: "\${transcript}"\`,
         config: {
           systemInstruction,
           responseMimeType: "application/json",

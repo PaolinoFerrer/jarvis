@@ -1,8 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-// FIX: Define types for the Web Speech API to resolve TypeScript errors,
+// Define types for the Web Speech API to resolve TypeScript errors,
 // as they are not included in default DOM typings.
-// These are minimal interfaces to match the usage in this hook.
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
@@ -52,8 +51,6 @@ declare global {
   }
 }
 
-
-// FIX: Renamed variable to avoid conflict with the SpeechRecognition interface type.
 const SpeechRecognitionAPI =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -64,7 +61,6 @@ interface UseVoiceToTextProps {
 export const useVoiceToText = ({ onTranscriptReady }: UseVoiceToTextProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [interimTranscript, setInterimTranscript] = useState('');
-  // FIX: Use the defined SpeechRecognition interface.
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const finalTranscriptRef = useRef<string>('');
 
@@ -74,7 +70,6 @@ export const useVoiceToText = ({ onTranscriptReady }: UseVoiceToTextProps) => {
       return;
     }
 
-    // FIX: Use the renamed constructor.
     const recognition = new SpeechRecognitionAPI();
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -86,7 +81,6 @@ export const useVoiceToText = ({ onTranscriptReady }: UseVoiceToTextProps) => {
       setInterimTranscript('');
     };
 
-    // FIX: Add type to event parameter.
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interim = '';
       let final = '';
@@ -107,7 +101,6 @@ export const useVoiceToText = ({ onTranscriptReady }: UseVoiceToTextProps) => {
       setInterimTranscript('');
     };
 
-    // FIX: Add type to event parameter.
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error', event.error);
       setIsRecording(false);
@@ -116,9 +109,10 @@ export const useVoiceToText = ({ onTranscriptReady }: UseVoiceToTextProps) => {
     recognitionRef.current = recognition;
 
     return () => {
-      recognition.stop();
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onTranscriptReady]);
 
   const startRecording = useCallback(() => {

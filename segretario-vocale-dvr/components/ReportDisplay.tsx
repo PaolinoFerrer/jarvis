@@ -17,21 +17,21 @@ const reportToMarkdown = (report: ReportData): string => {
 
   markdown += "## 1. Luoghi di Lavoro\n";
   if(report.workplaces.length > 0) {
-    report.workplaces.forEach(wp => markdown += `- ${wp.locationName}\n`);
+    report.workplaces.forEach(wp => markdown += `- \${wp.locationName}\n`);
   } else {
     markdown += "Nessuno\n";
   }
 
   markdown += "\n## 2. Macchinari, Impianti, Attrezzature, Sostanze\n";
     if(report.assets.length > 0) {
-    report.assets.forEach(a => markdown += `- ${a.name} (${a.type})\n`);
+    report.assets.forEach(a => markdown += `- \${a.name} (\${a.type})\n`);
   } else {
     markdown += "Nessuno\n";
   }
 
   markdown += "\n## 3. Gruppi Omogenei di Lavoratori\n";
     if(report.workerGroups.length > 0) {
-    report.workerGroups.forEach(wg => markdown += `- ${wg.name} (Mansioni: ${wg.tasks})\n`);
+    report.workerGroups.forEach(wg => markdown += `- \${wg.name} (Mansioni: \${wg.tasks})\n`);
   } else {
     markdown += "Nessuno\n";
   }
@@ -39,15 +39,15 @@ const reportToMarkdown = (report: ReportData): string => {
   markdown += "\n## 4. Attività e Analisi Rischi\n";
   if(report.activities.length > 0) {
     report.activities.forEach(act => {
-      markdown += `### Attività: ${act.name}\n`;
-      markdown += `- **Luogo:** ${act.workplace}\n`;
-      markdown += `- **Lavoratori:** ${act.workerGroups.join(', ')}\n`;
-      markdown += `- **Attrezzature:** ${act.assets.join(', ')}\n`;
+      markdown += \`### Attività: \${act.name}\n\`;
+      markdown += \`- **Luogo:** \${act.workplace}\n\`;
+      markdown += \`- **Lavoratori:** \${act.workerGroups.join(', ')}\n\`;
+      markdown += \`- **Attrezzature:** \${act.assets.join(', ')}\n\`;
       markdown += "**Non Conformità Rilevate:**\n";
       act.nonConformities.forEach(nc => {
-          markdown += `  - **Descrizione:** ${nc.description}\n`;
-          markdown += `    - **Livello Rischio:** ${nc.riskLevel}\n`;
-          if(nc.violatedNorm) markdown += `    - **Norma Violata:** ${nc.violatedNorm}\n`;
+          markdown += \`  - **Descrizione:** \${nc.description}\n\`;
+          markdown += \`    - **Livello Rischio:** \${nc.riskLevel}\n\`;
+          if(nc.violatedNorm) markdown += \`    - **Norma Violata:** \${nc.violatedNorm}\n\`;
       });
       markdown += "\n";
     });
@@ -59,15 +59,14 @@ const reportToMarkdown = (report: ReportData): string => {
   const allNonConformities = report.activities.flatMap(a => a.nonConformities.map(nc => ({ ...nc, workplace: a.workplace })));
   if (allNonConformities.length > 0) {
      const grouped = allNonConformities.reduce((acc, nc) => {
-      acc[nc.workplace] = acc[nc.workplace] || [];
-      acc[nc.workplace].push(nc);
+      (acc[nc.workplace] = acc[nc.workplace] || []).push(nc);
       return acc;
     }, {} as Record<string, typeof allNonConformities>);
 
     for (const workplace in grouped) {
-      markdown += `### Luogo: ${workplace}\n`;
+      markdown += \`### Luogo: \${workplace}\n\`;
       grouped[workplace].forEach(nc => {
-        markdown += `- [ ] **[${nc.riskLevel}]** ${nc.description} (Rif: ${nc.violatedNorm || 'N/A'})\n`;
+        markdown += \`- [ ] **[\${nc.riskLevel}]** \${nc.description} (Rif: \${nc.violatedNorm || 'N/A'})\n\`;
       });
     }
   } else {
@@ -84,7 +83,7 @@ const RiskBadge: React.FC<{ level: 'Basso' | 'Medio' | 'Alto' }> = ({ level }) =
     Medio: 'bg-yellow-800 text-yellow-300 border-yellow-600',
     Alto: 'bg-red-800 text-red-300 border-red-600',
   };
-  return <span className={`px-2 py-1 text-xs font-bold rounded-full border ${styles[level]}`}>{level.toUpperCase()}</span>;
+  return <span className={\`px-2 py-1 text-xs font-bold rounded-full border \${styles[level]}\`}>{level.toUpperCase()}</span>;
 };
 
 const ActivityCard: React.FC<{ activity: Activity }> = ({ activity }) => (
@@ -137,11 +136,11 @@ const ImprovementPlan: React.FC<{ activities: Activity[] }> = ({ activities }) =
   return (
     <div className="mt-8 p-6 bg-slate-900/50 rounded-xl border border-slate-700">
       <h2 className="text-2xl font-bold mb-4 text-amber-400">Piano di Miglioramento</h2>
-      {Object.entries(groupedByWorkplace).map(([workplace, ncs]) => (
+      {Object.keys(groupedByWorkplace).map(workplace => (
         <div key={workplace} className="mb-6">
           <h3 className="text-lg font-semibold text-cyan-400 border-b border-slate-600 pb-2 mb-3">{workplace}</h3>
           <ul className="space-y-3">
-            {ncs.map((nc, index) => (
+            {groupedByWorkplace[workplace].map((nc, index) => (
               <li key={index} className="flex items-start gap-4">
                 <RiskBadge level={nc.riskLevel} />
                 <div>
@@ -183,7 +182,7 @@ export const ReportDisplay: React.FC<ReportDisplayProps> = ({ report, hasData, o
   }
   
   const TabButton: React.FC<{tab: Tab, label: string, icon: React.ReactNode}> = ({tab, label, icon}) => (
-     <button onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === tab ? 'bg-cyan-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
+     <button onClick={() => setActiveTab(tab)} className={\`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors \${activeTab === tab ? 'bg-cyan-600 text-white' : 'text-slate-300 hover:bg-slate-700'}\`}>
         {icon}
         {label}
     </button>
@@ -218,7 +217,7 @@ export const ReportDisplay: React.FC<ReportDisplayProps> = ({ report, hasData, o
         {activeTab === 'assets' && report.assets.map((asset, index) => (
             <div key={index} className="p-4 bg-slate-800 rounded-lg border border-slate-700">
                 <h3 className="font-bold text-white">{asset.name}</h3>
-                <p className="text-sm text-slate-400">{asset.type} {asset.notes ? `- ${asset.notes}` : ''}</p>
+                <p className="text-sm text-slate-400">{asset.type} {asset.notes ? \`- \${asset.notes}\` : ''}</p>
             </div>
         ))}
         {activeTab === 'workerGroups' && report.workerGroups.map((group, index) => (

@@ -51,7 +51,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({ location, onAddPhoto
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {location.photos.map((photo, index) => (
                 <div key={index} className="aspect-square rounded-lg overflow-hidden border-2 border-slate-600">
-                  <img src={photo} alt={`Foto ${index + 1} per ${location.locationName}`} className="w-full h-full object-cover" />
+                  <img src={photo} alt={\`Foto \${index + 1} per \${location.locationName}\`} className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>

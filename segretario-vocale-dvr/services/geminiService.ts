@@ -1,4 +1,3 @@
-
 import type { ReportData } from '../types';
 
 export const processTranscript = async (transcript: string): Promise<ReportData> => {
@@ -13,7 +12,7 @@ export const processTranscript = async (transcript: string): Promise<ReportData>
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`Errore dal server: ${response.status} ${errorBody}`);
+      throw new Error(\`Errore dal server: \${response.status} \${errorBody}\`);
     }
 
     const structuredData: ReportData = await response.json();

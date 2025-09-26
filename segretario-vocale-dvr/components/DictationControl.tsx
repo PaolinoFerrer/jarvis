@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MicrophoneIcon, ProcessingSpinnerIcon } from './Icons';
 
@@ -43,7 +42,7 @@ export const DictationControl: React.FC<DictationControlProps> = ({
         <button
           onClick={handleClick}
           disabled={disabled}
-          className={`relative w-24 h-24 rounded-full flex items-center justify-center text-white transition-all duration-300 shadow-xl mx-auto focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 ${bg} ${isRecording ? 'animate-pulse' : ''}`}
+          className={\`relative w-24 h-24 rounded-full flex items-center justify-center text-white transition-all duration-300 shadow-xl mx-auto focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 \${bg} \${isRecording ? 'animate-pulse' : ''}\`}
         >
           <span className="text-4xl">{icon}</span>
         </button>
