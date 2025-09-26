@@ -1,0 +1,7 @@
+{
+  "name": "Segretario Vocale DVR",
+  "description": "Un'app per dettare e strutturare automaticamente le valutazioni dei rischi durante i sopralluoghi, secondo il D.Lgs. 81/2008. Aggiungi note vocali e foto per ogni luogo di lavoro e ottieni un report organizzato.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
