@@ -83,7 +83,6 @@ const RiskBadge: React.FC<{ level: 'Basso' | 'Medio' | 'Alto' }> = ({ level }) =
     Medio: 'bg-yellow-800 text-yellow-300 border-yellow-600',
     Alto: 'bg-red-800 text-red-300 border-red-600',
   };
-  // FIX: Removed invalid escape character from the className prop.
   return <span className={`px-2 py-1 text-xs font-bold rounded-full border ${styles[level]}`}>{level.toUpperCase()}</span>;
 };
 
@@ -183,7 +182,6 @@ export const ReportDisplay: React.FC<ReportDisplayProps> = ({ report, hasData, o
   }
   
   const TabButton: React.FC<{tab: Tab, label: string, icon: React.ReactNode}> = ({tab, label, icon}) => (
-     // FIX: Removed invalid escape character from the className prop.
      <button onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === tab ? 'bg-cyan-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
         {icon}
         {label}

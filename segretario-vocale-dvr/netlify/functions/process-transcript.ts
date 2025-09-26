@@ -104,7 +104,7 @@ export const handler: Handler = async (event) => {
 
     const response: GenerateContentResponse = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: \`TRASCRIZIONE: "\${transcript}"\`,
+        contents: `TRASCRIZIONE: "${transcript}"`,
         config: {
           systemInstruction,
           responseMimeType: "application/json",

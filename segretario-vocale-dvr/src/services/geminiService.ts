@@ -12,7 +12,6 @@ export const processTranscript = async (transcript: string): Promise<ReportData>
 
     if (!response.ok) {
       const errorBody = await response.text();
-      // FIX: Removed invalid escape character before the template literal's opening backtick.
       throw new Error(`Errore dal server: ${response.status} ${errorBody}`);
     }
 
